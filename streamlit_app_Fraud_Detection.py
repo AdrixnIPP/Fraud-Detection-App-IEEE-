@@ -12,8 +12,30 @@ from sklearn.metrics import roc_auc_score, roc_curve, confusion_matrix, precisio
 st.title("📊 Détection de Fraude avec XGBoost")
 
 # Upload des fichiers CSV
-train_transaction_file = st.file_uploader("Upload du fichier train_transaction.csv", type=["csv"])
-train_identity_file = st.file_uploader("Upload du fichier train_identity.csv", type=["csv"])
+train_transaction_file = st.file_uploader("10gZEztQMNJ323_wTrjBl7duYeKvF06Wg", type=["csv"])
+train_identity_file = st.file_uploader("1qVwgfh7795K42MLkSVFxggQd0ga4NUqG", type=["csv"])
+
+# 🔗 URL pour récupérer les fichiers depuis Google Drive
+url_transaction = f"https://drive.google.com/uc?export=download&id={"10gZEztQMNJ323_wTrjBl7duYeKvF06Wg"}"
+url_identity = f"https://drive.google.com/uc?export=download&id={"1qVwgfh7795K42MLkSVFxggQd0ga4NUqG"}"
+
+# 📥 Fonction pour charger les fichiers depuis Google Drive
+@st.cache_data
+def load_data(url):
+    response = requests.get(url)
+    response.raise_for_status()
+    return pd.read_csv(StringIO(response.text))
+
+# Chargement des fichiers
+train_transaction = load_data(url_transaction)
+train_identity = load_data(url_identity)
+
+# Fusion des fichiers
+train_df = pd.merge(train_transaction, train_identity, how='left', on='TransactionID')
+
+# Affichage des premières lignes
+st.subheader("Aperçu des données fusionnées :")
+st.dataframe(train_df.head())
 
 if train_transaction_file and train_identity_file:
     train_transaction = pd.read_csv(train_transaction_file)
