@@ -4,3 +4,7 @@ streamlit
 plotly
 scikit-learn
 xgboost
+yellowbrick
+matplotlib
+seaborn
+
